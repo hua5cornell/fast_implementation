@@ -1,0 +1,41 @@
+This is BibTeX, Version 0.99dThe top-level auxiliary file: fast_implementation.aux
+The style file: ACM-Reference-Format.bst
+Database file #1: cite.bib
+Warning--entry type for "Prakash:Library" isn't style-file defined
+--line 1 of file cite.bib
+Warning--entry type for "Gilla:Library" isn't style-file defined
+--line 7 of file cite.bib
+You're missing a field name---line 103 of file cite.bib
+ : 
+ : % AUTHOR = "Supratik Chakraborty and David L. Dill and Kenneth Y. Yun",
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+You're missing a field name---line 143 of file cite.bib
+ : 
+ : % AUTHOR = "Bakir Farhi",
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+You're missing a field name---line 179 of file cite.bib
+ : 
+ : % AUTHOR = "Aiguo Xie and Sangyun Kim and Peter A. Beerel",
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Warning--no number and no volume in Bern:Ne
+Warning--page numbers missing in both pages and numpages fields in Bern:Ne
+Warning--no number and no volume in Gaubert:Rational
+Warning--page numbers missing in both pages and numpages fields in Gaubert:Rational
+Warning--no number and no volume in Gunawardena:Timing
+Warning--page numbers missing in both pages and numpages fields in Gunawardena:Timing
+Warning--empty address in How:Dynamic
+Warning--no number and no volume in Hua:Exact
+Warning--page numbers missing in both pages and numpages fields in Hua:Exact
+Warning--no journal in Hulgaard:Report
+Warning--no number and no volume in Hulgaard:Report
+Warning--page numbers missing in both pages and numpages fields in Hulgaard:Report
+Warning--empty address in Law:Combinatorial
+Warning--no number and no volume in Manohar:Quasi
+Warning--page numbers missing in both pages and numpages fields in Manohar:Quasi
+Warning--no number and no volume in McGee:An
+Warning--no number and no volume in Moreira:Automated
+Warning--no number and no volume in Moreira:LiChEn
+(There were 3 error messages)

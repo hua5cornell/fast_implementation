@@ -1,0 +1,453 @@
+% THIS IS SIGPROC-SP.TEX - VERSION 3.1
+% WORKS WITH V3.2SP OF ACM_PROC_ARTICLE-SP.CLS
+% APRIL 2009
+%
+% It is an example file showing how to use the 'acm_proc_article-sp.cls' V3.2SP
+% LaTeX2e document class file for Conference Proceedings submissions.
+% ----------------------------------------------------------------------------------------------------------------
+% This .tex file (and associated .cls V3.2SP) *DOES NOT* produce:
+%       1) The Permission Statement
+%       2) The Conference (location) Info information
+%       3) The Copyright Line with ACM data
+%       4) Page numbering
+% ---------------------------------------------------------------------------------------------------------------
+% It is an example which *does* use the .bib file (from which the .bbl file
+% is produced).
+% REMEMBER HOWEVER: After having produced the .bbl file,
+% and prior to final submission,
+% you need to 'insert'  your .bbl file into your source .tex file so as to provide
+% ONE 'self-contained' source file.
+%
+% Questions regarding SIGS should be sent to
+% Adrienne Griscti ---> griscti@acm.org
+%
+% Questions/suggestions regarding the guidelines, .tex and .cls files, etc. to
+% Gerald Murray ---> murray@hq.acm.org
+%
+% For tracking purposes - this is V3.1SP - APRIL 2009
+
+\documentclass[sigconf, 10pt, twocolumn]{acmart}
+\settopmatter{printacmref=false}
+\setcopyright{rightsretained}
+\usepackage{epstopdf}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usetikzlibrary{calc, matrix, shapes, arrows, positioning, chains, decorations}
+\newtheorem{algorithm}{Algorithm}
+%\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{mydef}{Definition}
+\newcommand{\intervalcc}{\genericinterval[]}
+\newcommand{\intervaloo}{\genericinterval][}
+\newcommand{\intervalco}{\genericinterval]]}
+\newcommand{\intervaloc}{\genericinterval[[}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+%\usepackage{booktabs}
+%\twocolumn
+\begin{document}
+\title{Fast Implementation of Timing Analysis for Asynchronous Circuits}
+
+\begin{abstract}
+Asynchronous circuits have potential advantages of higher speed and lower power consumption compared to their synchronous counterpart, but their poor CAD support is a major obstacle. Many problems encountered in asynchronous timing analysis have been explored in the literature, but a comprehensive timing analysis flow like that in synchronous domain is still missing. In this paper, we give a complete description of the flow, from cell characterizations to timing graph generation. With existing theories and efficient algorithms to analyze the graph and Galois system to run c++ code in parallel, we will provide a fast implementation of asynchronous timing analysis.
+\end{abstract}
+\maketitle
+\section{Introduction}
+Asynchronous circuits do not use global clocks, and have many potential advantages over synchronous circuits including higher speed, lower power consumption, and no clock skew problems. One of the reasons that it is still not popular and widely accepted in industry is lack of CAD tools for timing analysis of such circuits. Timing analysis is a crucial part to evaluate performance of asynchronous circuits, but it is also more complicated than that for their synchronous counterpart. Timing analysis of synchronous circuits can be effectively done by analyzing acyclic regions of combinational logic separated by clocked elements. In asynchronous circuits, however, due to lack of the global clock and existence of the handshake, the time of each signal transition depends on that of many other signal transitions, and timing paths we are going to examine are usually cyclic. Thus, traditional timing analysis methods and tools for synchronous circuits do not apply in this case.
+\tikzset{
+decision/.style={
+  diamond,
+  draw,
+  text width=4em,
+  text badly centered,
+  inner sep=0pt
+},
+flipflop/.style={
+  rectangle,
+  draw,
+  very thick,
+  minimum height=5em,
+  minimum width=1.3em,
+},
+block/.style={
+  rectangle,
+  draw,
+  text width=6em,
+  text centered,
+  very thick,
+  rounded corners,
+  align=center,
+},
+cycle/.style={
+  ellipse,
+  draw,
+  dashed,
+  minimum width = 1.6cm,
+  minimum height = 1.05cm,
+  ultra thick,
+},
+combinational/.style={
+  cloud,
+  draw,
+  very thick,
+  minimum height=4.5em,
+  minimum width=1.8cm,
+},
+module/.style={
+  rectangle,
+  draw,
+  very thick,
+  minimum height=4.5em,
+  minimum width=1.4cm,
+  inner sep=0pt,
+},
+descr/.style={
+  fill=white,
+  inner sep=2.5pt,
+},
+CLK/.style={
+  isosceles triangle,
+  isosceles triangle apex angle=60,
+  draw,
+  very thick,
+  minimum height=0.27cm,
+  inner sep=0pt,
+},
+arrow/.style={
+  ->, >=stealth, thick,
+},
+connector/.style={
+  -latex,
+  font=\scriptsize,
+},
+line/.style={
+  draw, -latex',
+  very thick,
+},
+}
+
+
+\begin{figure}
+\begin{tikzpicture} [font=\small]
+\node (d) {Data};
+\node (c) [below = 1.2cm of d] {Clk};
+\node [flipflop] (1) [below right = -0.775cm and 0.65cm of d] {};
+\node [combinational] (2) [right = 0.45cm of 1] {CL};
+\node [flipflop] (3) [right = 0.45cm of 2] {};
+\node [combinational] (4) [right = 0.45cm of 3] {CL};
+\node [flipflop] (5) [right = 0.45cm of 4] {};
+\node [CLK] (6) [below right = -0.6cm and -0.49cm of 1] {};
+\node [CLK] (7) [below right = -0.6cm and -0.49cm of 3] {};
+\node [CLK] (8) [below right = -0.6cm and -0.49cm of 5] {};
+\path [line, very thick] ([yshift=0.35cm]1.east) -- ([yshift=0.34cm]2.west);
+\path [line, very thick] ([yshift=0.35cm]2.east) -- ([yshift=0.34cm]3.west);
+\path [line, very thick] ([yshift=0.35cm]3.east) -- ([yshift=0.34cm]4.west);
+\path [line, very thick] ([yshift=0.35cm]4.east) -- ([yshift=0.34cm]5.west);
+\path [line, very thick] (d.east) -- ([yshift=0.34cm]1.west);
+\path [line, very thick] (c.east) -- ++(0.32, 0) |- (6.west);
+\path [line, very thick] (c.east) -- ++(3.4, 0) |- (7.west);
+\path [line, very thick] (c.east) -- ++(6.45, 0) |- (8.west);
+
+\node [module] (9) [below = 1.1cm of 1] {Module 1};
+\node [module] (10) [right = 1.1cm of 9] {Module 2};
+\node [module] (11) [right = 1.1cm of 10] {Module 3};
+\node [cycle] (12) [above right = -1.3cm and -0.04cm of 9] {};
+\node [cycle] (13) [right = -0.25cm of 10] {};
+\path [line, very thick] ([yshift=0.55cm]9.east) -- node[pos=0.0, above right] {Data 1} ([yshift=0.55cm]10.west);
+\path [line, very thick] ([yshift=0.55cm]10.east) -- node[pos=0.0, above right] {Data 1} ([yshift=0.55cm]11.west);
+\path [line, very thick] ([yshift=0.1cm]9.east) -- node[pos=0.0, above right] {Data 0}([yshift=0.1cm]10.west);
+\path [line, very thick] ([yshift=0.1cm]10.east) -- node[pos=0.0, above right] {Data 0}([yshift=0.1cm]11.west);
+\path [line, very thick] ([yshift=-0.45cm]10.west) -- node[pos=0.15, above left] {Ack} ([yshift=-0.45cm]9.east);
+\path [line, very thick] ([yshift=-0.45cm]11.west) -- node[pos=0.15, above left] {Ack} ([yshift=-0.45cm]10.east);
+\end{tikzpicture}
+\caption{Synchronous vs Asynchronous Circuit}
+\vspace{-1.2cm}
+\end{figure}
+
+Asynchronous circuits timing and modeling problems have been explored in many previous papers. Petri-Nets~\cite{Murata:Petri}, Marked-Graphs~\cite{Commoner:Marked}, and Repetitive Event-Rule ({\it RER\/}) systems~\cite{Burns:Peformance} (including its extended version: Extended Repetitive Event-Rule ({\it XRER\/}) System~\cite{Lee:Analysis}) are several representative models for asynchronous circuits timing analysis. Properties of these models, thus timing of asynchronous circuits, have been well studied in both mathematics~\cite{Gunawardena:Timing,Gunawardena:Cycle,Gaubert:Rational,Mark:Tr,Bern:Ne,Ser:CSR,Gle:Weak} and engineering literature~\cite{Burns:Peformance,Hulgaard:Report,Lee:Analysis,McGee:An,Hua:Exact}, and it has been shown that such systems exhibit periodicity properties, and under the (conservative) assumption of and-causality and fixed delays, the circuit performance and throughput can be characterized by the maximum cycle ratio of its graphic representation. Maximum and minimum cycle ratio problems has been also well studied in many previous papers~\cite{How:Dynamic,Law:Combinatorial,Karp:Parametric,Burns:Peformance,Neal:Faster}. According to the survey paper~\cite{Dasdan:Experimental}, one of the fastest algorithms for the minimum cycle ratio problem, the dual problem of the maximum cycle ratio problem, is proposed in~\cite{Neal:Faster}, which is an asymptotically efficient implementation of the algorithm presented in~\cite{Karp:Parametric}.
+
+These papers provide theoretical foundations for using weighted, labeled digraphs as the basic mathematical models for asynchronous timing analysis, which solve the problem by examining graph and path properties. Most of previous works, including~\cite{Burns:Peformance,Hulgaard:Report,Lee:Analysis,McGee:An,Hua:Exact}, however, focused on illustrations of concepts and properties of the models themselves, but lack a comprehensive flow to construct such a graphic model from a real circuit design. The paper~\cite{Lee:Analysis} proposed an index priority simulation algorithm that gives a systematic way to transform the circuit to the graph structure giving circuit functionalities, but it did not explain that how to extract and determine the weight (corresponding to propagation delays of signal transitions) of edges in the graph given a real circuit design either, and used arbitrary or empirical values for these weight as in other works.
+
+In synchronous timing analysis, delays and timing information need to be extracted from standard cell libraries (liberty files). For asynchronous timing analysis, we need standard cell characterizations as well, and there are also a few papers related to this topic in the literature. The paper~\cite{Prakash:Library} described the cell characterization of static single-track full buffers, and the paper~\cite{Gilla:Library} introduced that of GasP circuits, where the look-up tables used two-dimensional search key depending on size of the gates. The more recent work~\cite{Moreira:LiChEn} and~\cite{Moreira:Automated} provided the cell characterization for more general and typical asynchronous circuits. It turns out that lack of clocked elements and existence of different type of state-holding elements make asynchronous cell characterizations slightly different from their synchronous counterpart in general. However, asynchronous cell characterizations can be readily supported with very similar format to synchronous cell characterizations, with some reasonable extensions.
+%, which involves in basic standard cell characterization for asynchronous circuits. There are a few papers related to this topic.
+
+
+
+In this paper, we fill in the holes of previous work by giving a description of a comprehensive asynchronous timing analysis flow, including standard cell library generation and graphic model construction. Along the way, we are going to discuss several major differences and difficulties involved in asynchronous timing analysis: liberty file extension and slew rate approximation for delay extractions. Together with these delay values and timing information, we will adopt the index priority simulation algorithm proposed in~\cite{Lee:Analysis} and maximum cycle ratio algorithm provided in~\cite{Karp:Parametric,Neal:Faster} to construct and analyze the graphic model, {\it RER\/} system~\cite{Burns:Peformance}, and conclude our asynchronous timing analysis. We will also use Galois system that runtime executes our C++ program in parallel to accelerate our implementation of asynchronous timing analysis tool.
+
+
+%Unlike the input slew rates that are given in synchronous timing analysis, we need to calculate them in asynchronous timing analysis based on circuit topologies and the observation that cell delays are weak functions of input slew rates.
+
+The rest of the paper will be organized as following: Section 2 will provide the necessary preliminaries for theories of asynchronous timing analysis; Section 3 will describe the comprehensive asynchronous timing analysis flow, focusing on discussions of its major differences and difficulties; Section 4 will include the experimental results, and Section 5 will give a conclusion of the paper.
+\section{Theoretical Preliminaries}
+In this paper, we will adopt the model of {\it RER\/} system which was first introduced by Burns~\cite{Burns:Peformance}. Some of the basic definitions and properties of production rules and {\it RER\/} systems discussed in~\cite{Manohar:Quasi,Burns:Peformance,Hulgaard:Report,Hua:Exact} are repeated here.
+\begin{mydef}
+A production rule set ({\it PRS\/}) is a construct of the form $G \ \stackrel{}{\mapsto} t$, where $t$ is a simple assignment (a transition), and $G$ is a boolean expression, which is called the guard of the {\it PR\/}. A gate with output $x$, pull-up network $B^{+}$, and pull-down network $B^{-}$ corresponds to the production rules
+\begin{align}
+&B^{+} \stackrel{}{\mapsto} x\uparrow \\ \nonumber
+&B^{-} \stackrel{}{\mapsto} x\downarrow.
+\end{align}
+\end{mydef}
+A production rule set({\it PR\/}) is the concurrent composition of all the production rules in the set. A production rule set is used to describe a network of gates. For a transition $t$, $R(t)$ denotes the result of a transition. For example, a 2-input NAND gate with input $a$ and $b$ and output $c$ would be represented by production rules:
+\begin{align}
+&a \wedge b \stackrel{}{\mapsto} c\downarrow \\ \nonumber
+&\neg a \vee \neg b \stackrel{}{\mapsto} c\uparrow.
+\end{align}
+  For a transition $t$, $R(t)$ denotes the result of a transition. For example, $R(c\uparrow) = c$ and $R(c\downarrow) = \neg c$
+\begin{mydef}
+A production $G \stackrel{}{\mapsto} t$ is self-invalidating when $R(t) \stackrel{}{\mapsto} \neg G$.
+\end{mydef}
+
+\begin{mydef}
+The production rules $B^{+} \stackrel{}{\mapsto} x\uparrow$ and $B^{-} \stackrel{}{\mapsto} x\downarrow$ are non-interfering in a computation if and only if $\neg B^{+} \vee \neg B^{-}$ is always true. A production rule set is non-interfering if every production rule in the set is non-interfering.
+\end{mydef}
+\begin{mydef}
+A production $G \stackrel{}{\mapsto} t$ is stable in a computation if and only if $G$ can change from true to false only in those states of the computation in which $R(t)$ holds. A production rule set is stable if and only if every production rule in the set is stable.
+\end{mydef}
+In this paper, we will assume that ignoring arbiters and synchronizers, the production rule set corresponds to the circuit is non-interfering and stable, and no production rule is self-invalidating.
+\begin{mydef}
+An event-rule ({\it ER\/}) system is a pair $\langle E, R\rangle$ where $E$ is a set of events, and $R$ $\subseteq$ $E \times E \times \mathbb{R}_{\geq 0}$ is a set of rules that define timing constraints.
+\end{mydef}
+\begin{mydef}
+A repetitive event-rule ({\it RER\/}) system is a pair $\langle E',
+R'\rangle$ where $E'$ is a set of transitions, and $R' \subseteq E'
+\times E' \times \mathbb{R}_{\geq0} \times \mathbb{N}$ is a set of
+rule templates. The {\it ER\/} system corresponding to $\langle E',
+R'\rangle$ is given by $\langle E, R\rangle$, where $E$ = $E' \times
+\mathbb{N}$ and $R$ consists of rules of the form $\langle u, i\rangle
+\ \stackrel{\alpha}{\mapsto} \langle v, i+\epsilon \rangle$ where
+$r=(u,v,\alpha,\epsilon)\in R'$ and $i \in \mathbb{N}$. The non-negative integer $i$ is called the occurrence index and $\epsilon = \{0, 1\}$ is called the occurrence index offset of $r$.
+\end{mydef}
+\begin{mydef}
+\label{def:timingsim}
+The timing simulation $\hat{t}$ of an event $f$ is defined by
+\begin{equation}
+\hat{t}(f) = \max \{\hat{t}(e) + \alpha \ | \ e \ \stackrel{\alpha}{\mapsto} f \in R\}
+\end{equation}
+with the convention that the max operator evaluates to 0 when the set is empty (for initial events).
+\end{mydef}
+
+\begin{mydef}
+A path $p$ of length $n$ (denoted as $l(p) = n$) in an {\it RER\/} system is a list of arcs $(e_0,
+e_1, ..., e_n)$ where $(e_i, e_{i+1}, \alpha_i, \epsilon_i)$ $\in$
+$R'$, for some $\alpha_i \in \mathbb{R}_{\geq 0}$ and $\epsilon_i \in
+\mathbb{N}$. We define the delay along the path $p$ by $\delta(p)$ =
+$\sum_{i}\ \alpha_i$ and the epsilon-sum $\epsilon(p)$ =
+$\sum_{i}\ \epsilon_i$. A path is a simple cycle iff $e_0$ = $e_n$ and
+$e_i$ $\neq$ $e_j$ for all other pairs $i$, $j$ with $i\neq j$.
+
+A path $p$ of length $n$ in an {\it ER\/} system is a list of arcs $(e_0,
+e_1, ..., e_n)$ where $e_i \ \stackrel{\alpha_i}{\mapsto} e_{i+1}$
+$\in$ $R$, for some $\alpha_i$ $\in$ $\mathbb{R}_{\geq 0}$. We define
+the delay along the path $p$ by $\delta(p)$ =
+$\sum_{i}\ \alpha_i$.
+\end{mydef}
+\begin{mydef}
+An {\it RER\/} system is said to be valid if for each transition $e$ in the
+{\it RER\/} system, there is a path $p$ from $e$ back to itself with
+$\epsilon(p)=1$ and $\delta(p) > 0$.
+\end{mydef}
+\begin{mydef}
+\label{def:critcycle}
+The cycle mean of a cycle $C$ is defined to be $\delta(C)/\epsilon(C)$.
+A critical cycle $C$ of an {\it RER\/} system is a simple cycle with the
+maximum cycle mean $p^\star$, given by
+$p^\star = \max_C \delta{(C)}/\epsilon{(C)}$ over all cycles $C$.
+\end{mydef}
+We will now state the following weaker version of the theorem proved in~\cite{Hua:Exact}. As we can see from the theorem, $p^\star$ is one of the most important parameters in asynchronous timing analysis:
+\begin{theorem}
+In a strongly connected {\it RER\/} system with and-causality and fixed delay values, There are integer constants $M$ and $k^\star$
+such that for all transitions $e$ and all integers $n \geq k^\star$,
+$$
+\hat{t}(\langle e,n+M\rangle) - \hat{t}(\langle e, n\rangle) = Mp^{\star}.
+$$
+\end{theorem}
+In other words, under the fixed delay model and conservative and-causality assumption, each signal transition in the circuit will occur periodically, with time period closely related $p\star$. Our asynchronous timing analysis will calculate the value $p^\star$ of the final {\it RER\/} system modeled from the circuit design. $p^\star$ is also called the cycle time, which has been proved to characterize the circuit throughput and performance. It will give a conservative estimation on how fast the circuit can run, similar to the minimum clock period in synchronous circuits.
+
+Notice that {\it RER\/} systems we will consider in this paper correspond to practical asynchronous circuits only. Thus they will be a subclass of those discussed in \cite{Hua:Exact}, and some graph topologies, despite of being mathematically valid, will never appear in this paper. For example, no direct edge(rule) will be connecting signal transitions $x\uparrow$ and $x\downarrow$ (no self-invalidating production rules) for {\it RER\/} systems in this paper.
+\section{Fast Implementations of Asynchronous Timing Analysis}
+With all of the preliminaries presented in section 2, we will now describe the comprehensive asynchronous timing analysis flow.
+%In this paper, we use c++ to implement the asynchronous timing analysis. For a circuit, we will assume that the ACT file, which includes the information of circuit topology and functionality, is initially given as the input, The workflow of the whole implementation process is given in the Figure~\ref{fig:workflow}.
+%rectangle connector/.style={
+%  connector,
+%  to path={(\tikztostart) -- ++(#1, 0pt) \tikztonodes |- (\tikztotarget) },
+%  pos=0.5
+%},
+%rectangle connector/.default=-2cm,
+%straight connector/.style={
+%  connector,
+%  to path=--(\tikztotarget) \tikztonodes
+%}
+
+\begin{tikzpicture}[align=center, font=\small, node distance = 2cm]
+  \node [block] (1) {Gate Level Design (.act)}    ;
+  \node [block] (2) [below = 1cm of 1]{Cell Database (.spi)} ;
+  \node [block] (3) [below left=1cm and 0.4cm of 1]{Verilog Netlist (.v)} ;
+  \node [block] (4) [below right=1cm and 0.4cm of 1]{Production Rules(PRS)}  ;
+  \node [block] (5) [below =1cm of 2]{Cell Characterizations (.spi)}   ;
+  \node [block] (6) [below =3cm of 2]{RER System}  ;
+  \node [block] (7) [below =1cm of 6]{Timing Analysis}  ;
+\path [line, very thick] (1.south) -- ++(0, -0.6) node[pos=0.1, below left]{NETGEN} -| (2.north);
+\path [line, very thick] (1.south) -- ++(0, -0.6) -| (3.north);
+\path [line, very thick] (1.south) -- ++(0, -0.6) -| (4.north);
+\path [line, very thick] (4.south) |- (5.east);
+\path [line, very thick] (2.south) -- ++(0, -0.4) -| (5.north);
+\path [line, very thick] (3.south) |- (6.west);
+\path [line, very thick] (5.south) -- ++(0, -0.4) node[pos=1.2, below right]{IPS Algorithm} -| (6.north);
+\path [line, very thick] (4.south) |- (6.east);
+\path [line, very thick] (6.south) -- node[pos=0.4, below left]{MCR Algorithm} (7.north);
+\end{tikzpicture}
+$$
+$$
+Our asynchronous circuit design is provided in ACT(.act) files, which contain the information of functionalities (PRS), channels and connections. We will use our tool ``NETGEN'' to generate the corresponding spice netlists and verilog netlists for the circuit. Index priority simulation(IPS) algorithm developed in~\cite{Lee:Analysis} will transform the PRS to {\it RER\/} system skeleton(nodes and edge connections only). Ticks are put on some of the edges according to the Reset signal of the circuit. The spice netlists are processed for HSPICE simulations and cell characterizations later. Together with cell characterizations and verilog netlists, we will determine the weight of each edge. After we have the full {\it RER\/} system (graph), we will implement the maximum cycle ratio (MCR) algorithm, which is the dual problem of minimum cycle ratio problem, introduced in~\cite{Neal:Faster,Karp:Parametric,Dasdan:Experimental}.
+\subsection{RER Skeleton and Ticked Edges}
+Index priority simulation developed in~\cite{Lee:Analysis} is an algorithm which identifies the repeated signal transitions and their causalities by simulating the circuit state transitions. Given a production rule set(PRS) and an initial state for all the signals in the system, it simulates the circuit to track that what signal changes leads to another, until the circuit shows repeated state. It has been proved in~\cite{Lee:Analysis} to give a correct {\it RER\/} system skeleton with signal transitions and their timing arc connections. Since we have our own Reset signals for our circuit design, we will use a different method from that in~\cite{Lee:Analysis} to determine the ticked edges. By definition, if a signal transition $a\uparrow$ occurs at time 0, which means that $\hat{t}(\langle a, 0\rangle) = 0$, then all the incoming edges to $a\uparrow$ in the corresponding {\it RER\/} system has a tick. Thus, we first reset the circuit can calculate the initial state (initial signal level of every transition) of the circuit. Then we release the reset signal to see that what signal transitions are enabled immediately, and put a tick on every incoming edge to them in the corresponding {\it RER\/} system.
+%\begin{figure}
+%\centering
+%\includegraphics[page=2, trim=0.8in 1in 1.8in 1.1in, clip, height=1.7in, width=2.2in]{implementation}
+%\caption{Asynchronous Timing Analysis Workflow}
+%\label{fig:workflow}
+%\vspace{-1em}
+%\end{figure}
+
+
+\subsection{Liberty File and Cell Characterization}
+Standard cell library: liberty (.lib) files contain information of timing and power information of basic cell element. For the timing analysis, we are only interested in the timing information in the files, which usually consists of 2D tables of propagation delays and transition time. Standard cells in synchronous circuit design are divided into two categories: combinational gates (NAND, NOR, INVERTER, etc.) and flip-flops. In this paper, we will adopt similar format to generate standard cell library for asynchronous circuits.
+
+It turns out that characterizations of combinational gates in asynchronous circuit design are the same as that in synchronous counterpart. However, since asynchronous circuits do not have global clock signals, characterizations of general state-holding gates (for example, C element) are simplified, but a little bit different, and some extensions of the format of liberty files are needed. Look at the following example for C element commonly used in asynchronous circuit. In order to characterize the propagation delay from the signal transition $a\uparrow$ to $c\uparrow$, we have to first set $b$ to 1 and $c$ to 0. Then, let $a$ changes from 0 to 1, and measures the propagation delay from $a\uparrow$ to $c\uparrow$. To characterize the propagation delay from signal transition $a\downarrow$ to $c\downarrow$, however, we have to first set $b$ to 0 and $c$ to 1. Then let $a$ changes from 1 to 0. In other words, the ``cell$\_$rise'' and ``cell$\_$fall'' of pin $c$ in the liberty file correspond to different input conditions: $b = 1$ and $b = 0$, and have to be measured and characterized separately. This is different from combinational logic, where if one of the inputs changes from 0 to 1 leads the output to change from 1 to 0, then the same input changes from 1 to 0 will lead the output to change from 0 to 1.
+In our implementation, we use functionalities given for each standard cell in asynchronous circuit to determine the timing arcs and whether they are combinational or state-holding. Then we use HSPICE to simulate the cells to extract their timing and capacitance information, and write it in the extended liberty file format.
+%For a given circuit, an ACT file will be provided, which contains the information of circuit topology and functionality. We will use the CAD tool called ``Celltk'' to generate the Spice Netlist for cells, and their corresponding {\it PRS\/}. Then, the liberty file that characterizing these cells is generated by calling the hspice within c++ with appropriate simulation commands.
+\subsection{Slew Rate Approximation}
+Given the 2D look-up tables of propagation delays and transition time, delays values of the timing graph can be extracted from these tables using linear interpolations by given the two input values: input slew rate and output capacitance. Most synchronous circuits can be partitioned into acyclic regions, separated by clocked elements and the input slew rates are determined by parameters related to clock input. For asynchronous circuits, however, there is no such ``break points'' to get input slew rate of each stage. Instead, the input slew rate of a stage depends on the rise/falling transition time of the previous stage, which depends on the input slew rate of the previous stage. Such a cyclic dependence needs a different technique to extract the input slew rate. Fortunately, the rise/falling transition time of the output of a stage is a weak function of its input slew rate. Look at the following graph. It turns out that even starting with a wide range of input slew rate at some stage, the falling/rising transition time always converges to a very small range after a few stages of propagation.
+
+\subsection{Maximum Cycle Ratio Algorithm}
+Maximum (and minimum) cycle ratio problem has been explored in many previous papers. In this paper, we will implement Young-Tarjant-Orlin's algorithm~\cite{Neal:Faster}, an asymptotically efficient implementation of Karp-Orlin's algorithm~\cite{Karp:Parametric}. According to~\cite{Dasdan:Experimental}, it is one of the fastest and most robust minimum cycle ratio algorithm both in theory and real implementation. The maximum cycle ratio problem can be solved by negating weight of all the edges and run the minimum cycle ratio algorithm, and negating the final answer. A better way to avoid the negation overhead is to change the corresponding operators in the algorithm directly. Since we modify some operators of the algorithm to calculate the maximum cycle ratio, and the documentation in~\cite{Neal:Faster,Dasdan:Experimental} for minimum cycle ratio problem is not quite complete (for initial shortest path tree), we also give the pseudo code of our implementation of the algorithm here in~\ref{algorithm:YTO},~\ref{algorithm:LPT} and~\ref{algorithm:AK}.
+
+\begin{algorithm} \small
+\begin{algorithmic}
+\State $LPT(G = (V, E, w, \tau, d, t))$
+\State $V_t = \emptyset, E_t = \emptyset, T(s) = (V_t, E_t)$
+\For{$u \neq s, u \in G$}
+\State $V_t = V_t \cup \{u\}$
+\State $PQ_t.INSERT(<-\infty, u>)$
+\State $u.visited := false$
+\EndFor
+\State $s.visited := false$
+\State $V_t = V_t \cup \{s\}$
+\State $PQ_t.INSERT(<0, s>)$
+%\State $V_{check} := V - \{s\}$
+\While{$PQ_t \neq \emptyset$}
+\State $<d(u), u> := PQ_t.MAX()$
+\State $PQ_t.ERASE(<d(u), u>)$
+%\State $V_{check} := V_{check} - u$
+\If{$u.visited = false$}
+\State $E_t := E_t \cup \{e | e = (nk_t(u), u)\}$
+\Else
+\State $E_t := E_t - \{e | e = (pred(u, T(s)), u)\}$
+\State $E_t := E_t \cup \{e | e = (nk_t(u), u)\}$
+\If{$nk_t(u) \in T(u)$}
+\State $\bold{return}$ error: cycle with 0 tick exists, $r := \infty$
+\EndIf
+\EndIf
+\For{$v := succ(u, G)$}
+\If{$\tau(u, v) = 0$ and $d(v) < d(u) + w(u, v)$}
+\State $PQ_t.ERASE(d(v), v)$
+\State $d(v) := d(u) + w(u, v)$
+\State $PQ_t.INSERT(d(v), v)$
+\State $nk_t(v) := u$
+\EndIf
+\EndFor
+\If{$u.visited = false$}
+\State $u.visited := true$
+\EndIf
+\EndWhile
+\State $\bold{return}$  $T(s)$
+\end{algorithmic}
+\caption{Dijkstra's Longest-Path-Tree Algorithm}
+\label{algorithm:LPT}
+\end{algorithm}
+
+\begin{algorithm} \small
+\begin{algorithmic}
+\State $ARK(e = (u, v), G = (V, E, w, \tau, d, t))$
+\If{$t(u) + \tau(e) - t(v) > 0$}
+\State $\bold{return}$  $(d(u) + w(e) - d(v))/(t(u) + \tau(e) - t(v)))$
+\Else
+\State $\bold{return}$  $-\infty$
+\EndIf
+\end{algorithmic}
+\caption{Find Arc Key Function}
+\label{algorithm:AK}
+\end{algorithm}
+\begin{algorithm} \small
+\begin{algorithmic}
+\State $MCR(G = (V, E, w, \tau, d, t))$
+\State $V := V \cup \{s\}$
+\For{$v \in V$}
+\State $E := E \cup \{(s, v)\}; w(s, v) = 0; \tau(s, v) = 0$
+\State $d(v) := -\infty; t(v) := 0; nk(v) := NIL$
+\EndFor
+\State $d(s) := 0$
+\State $T(s) := LPT(G)$
+\For{$e \in E$}
+\State $ak(e) := ARK(e, G)$
+\If{$nk(v) = NIL$ or $ak(e) > ak(nk(v))$}
+\State $nk(v) := e$
+\EndIf
+\EndFor
+\State $PQ.INSERT(<-\infty, NIL>)$
+\For{$v \in V$}
+\State $PQ.INSERT(<ak(nk(v), nk(v)>)$
+\EndFor
+\While{($true$)}
+\State $<r, (u_0, v_0)> := PQ.MAX()$
+\If{$r = -\infty$ or $u_0 \in T(v_0)$}
+\State $\bold{return}$  $r$
+\EndIf
+\State $pred(v_0, T(s)) := u_0$
+\For{$x \in T(v_0)$}
+\State $d(x) := d(x) + d(u_0) + w(u_0, v_0) - d(v_0)$
+\State $t(x) := t(x) + t(u_0) + \tau(u_0, v_0) - t(v_0)$
+\EndFor
+\For{$x \in T(v_0)$}
+\State $ak_{ori} := ak(nk(x))$
+\State $ak(nk(x)) := -\infty$
+\For{$e \in \{(u, x) | u \in pred(x, G)\}$}
+\State $ak(e) := ARK(e, G)$
+\If{$ak(e) \geq ak(nk(v))$}
+\State $nk(x) := u$
+\EndIf
+\EndFor
+\State $PQ.ERASE(<ak_ori, nk(x)>)$
+\State $PQ.INSERT(<ak(nk(x)), nk(x)>)$
+\For{$e \in \{(x, v) | v \in succ(x, G)\}$}
+\State $ak_{ori} := ak(nk(x))$
+\State $ak(e) := ARK(e, G)$
+\If{$ak(e) > ak(nk(x))$}
+\State $nk(x) := u$
+\State $PQ.ERASE(<ak_ori, nk(x)>)$
+\State $PQ.INSERT(<ak(nk(x)), nk(x)>)$
+\EndIf
+\EndFor
+\EndFor
+\EndWhile
+\end{algorithmic}
+\caption{Young-Tarjan-Orlin's Critical Cycle Ratio Algorithm}
+\label{algorithm:YTO}
+\end{algorithm}
+
+
+For a given weighted and labeled digraph $G = (V, E)$, the algorithm first inserts a source node $s$ and zero ticked edges $(s, v)$ for each $v \in V$. The idea of the algorithm is to introduce a parameter $r$ to the graph and parameterize the graph such that the weight of each ticked edge becomes $w(e) - rt(e)$. Initially let $r = \infty$, and the graph is essentially acyclic because each simple cycle has at least one tick, and the longest path tree (each path from $s$ to node $v \in G$ in the tree corresponds to the longest path from $s$ to $v$) for the graph is well defined and can be calculated using Dijkstra's algorithm. As we decrease $r$, the longest path tree will change its structure, and we modify the tree structure such that the it corresponds to the longest path tree at $r$. At some point, some cycle will have nonnegative total weight, and the tree will lose its structure. Such a cycle has the maximum cycle ratio in the graph and the corresponding $r$ value will be equal to $p^\star$.
+
+\section{Experimental Results}
+In this section,
+\section{Conclusions}
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{cite}
+
+
+
+\end{document} 
