@@ -142,11 +142,11 @@ line/.style={
 \node [CLK] (6) [below right = -0.6cm and -0.49cm of 1] {};
 \node [CLK] (7) [below right = -0.6cm and -0.49cm of 3] {};
 \node [CLK] (8) [below right = -0.6cm and -0.49cm of 5] {};
-\path [line, very thick] ([yshift=0.35cm]1.east) -- ([yshift=0.34cm]2.west);
-\path [line, very thick] ([yshift=0.35cm]2.east) -- ([yshift=0.34cm]3.west);
-\path [line, very thick] ([yshift=0.35cm]3.east) -- ([yshift=0.34cm]4.west);
-\path [line, very thick] ([yshift=0.35cm]4.east) -- ([yshift=0.34cm]5.west);
-\path [line, very thick] (d.east) -- ([yshift=0.34cm]1.west);
+\path [line, very thick] ([yshift=0.35cm]1.east) -- ([yshift=0.35cm]2.west);
+\path [line, very thick] ([yshift=0.35cm]2.east) -- ([yshift=0.35cm]3.west);
+\path [line, very thick] ([yshift=0.35cm]3.east) -- ([yshift=0.35cm]4.west);
+\path [line, very thick] ([yshift=0.35cm]4.east) -- ([yshift=0.35cm]5.west);
+\path [line, very thick] (d.east) -- ([yshift=0.35cm]1.west);
 \path [line, very thick] (c.east) -- ++(0.32, 0) |- (6.west);
 \path [line, very thick] (c.east) -- ++(3.4, 0) |- (7.west);
 \path [line, very thick] (c.east) -- ++(6.45, 0) |- (8.west);
@@ -155,7 +155,7 @@ line/.style={
 \node [module] (10) [right = 1.1cm of 9] {Module 2};
 \node [module] (11) [right = 1.1cm of 10] {Module 3};
 \node [cycle] (12) [above right = -1.3cm and -0.04cm of 9] {};
-\node [cycle] (13) [right = -0.25cm of 10] {};
+\node [cycle] (13) [right = 0.87cm of 12] {};
 \path [line, very thick] ([yshift=0.55cm]9.east) -- node[pos=0.0, above right] {Data 1} ([yshift=0.55cm]10.west);
 \path [line, very thick] ([yshift=0.55cm]10.east) -- node[pos=0.0, above right] {Data 1} ([yshift=0.55cm]11.west);
 \path [line, very thick] ([yshift=0.1cm]9.east) -- node[pos=0.0, above right] {Data 0}([yshift=0.1cm]10.west);
