@@ -1,0 +1,328 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{24}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{}, \showDOI{}, and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showDOI}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showDOI #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showDOI      \undefined \def \showDOI       #1{#1}\fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[\protect\citeauthoryear{Burns}{Burns}{1991}]%
+        {Burns:Peformance}
+\bibfield{author}{\bibinfo{person}{Steven~M. Burns}.}
+  \bibinfo{year}{1991}\natexlab{}.
+\newblock \emph{\bibinfo{title}{Performance analysis and optimization of
+  asynchronous circuits}}.
+\newblock \bibinfo{thesistype}{Ph.D. Dissertation}. \bibinfo{school}{California
+  Instititute of Technology}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Charron-Bost, Fugger, and Nowak}{Charron-Bost
+  et~al\mbox{.}}{2012}]%
+        {Bern:Ne}
+\bibfield{author}{\bibinfo{person}{Bernadette Charron-Bost},
+  \bibinfo{person}{Matthias Fugger}, {and} \bibinfo{person}{Thomas Nowak}.}
+  \bibinfo{year}{2012}\natexlab{}.
+\newblock \showarticletitle{New transience bounds for long walks}.
+\newblock \bibinfo{journal}{\emph{E-print arXiv:1209.3342}}
+  (\bibinfo{year}{2012}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Commoner, Holt, Even, and Pnueli}{Commoner
+  et~al\mbox{.}}{1971}]%
+        {Commoner:Marked}
+\bibfield{author}{\bibinfo{person}{Frederic Commoner},
+  \bibinfo{person}{Anatol~W Holt}, \bibinfo{person}{S Even}, {and}
+  \bibinfo{person}{A Pnueli}.} \bibinfo{year}{1971}\natexlab{}.
+\newblock \showarticletitle{Marked directed graphs}.
+\newblock \bibinfo{journal}{\emph{Journal of Computer System and Sciences}}
+  \bibinfo{volume}{5} (\bibinfo{year}{1971}), \bibinfo{pages}{511--523}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Dasdan}{Dasdan}{2004}]%
+        {Dasdan:Experimental}
+\bibfield{author}{\bibinfo{person}{Ali Dasdan}.}
+  \bibinfo{year}{2004}\natexlab{}.
+\newblock \showarticletitle{Experimental analysis of the fastest optimum cycle
+  ratio and mean algorithms}.
+\newblock \bibinfo{journal}{\emph{Transactions on Design Automation of
+  Electronic Systems}} \bibinfo{volume}{9}, \bibinfo{number}{4}
+  (\bibinfo{year}{2004}), \bibinfo{pages}{385--418}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Gaubert and Klimann}{Gaubert and
+  Klimann}{1991}]%
+        {Gaubert:Rational}
+\bibfield{author}{\bibinfo{person}{Stephane Gaubert} {and}
+  \bibinfo{person}{Carlos Klimann}.} \bibinfo{year}{1991}\natexlab{}.
+\newblock \showarticletitle{Rational computation in dioid algebra and its
+  application to performance evaluation of discrete event systems}.
+\newblock \bibinfo{journal}{\emph{Algebraic computer in control}}
+  (\bibinfo{year}{1991}).
+\newblock
+\newblock
+\shownote{\uppercase{N}umber 165 in Lecture Notes in Computer Science,
+  Springer.}
+
+
+\bibitem[\protect\citeauthoryear{Gilla}{Gilla}{2010}]%
+        {Gilla:Library}
+\bibfield{author}{\bibinfo{person}{Swetha~Mettala Gilla}.}
+  \bibinfo{year}{2010}\natexlab{}.
+\newblock \bibinfo{title}{Library characterization and static timing analysis
+  of single-track circuits in GasP}.
+\newblock
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Gunawardena}{Gunawardena}{1993}]%
+        {Gunawardena:Timing}
+\bibfield{author}{\bibinfo{person}{Jeremy Gunawardena}.}
+  \bibinfo{year}{1993}\natexlab{}.
+\newblock \showarticletitle{Timing analysis of digital circuits and the theory
+  of min-max functions}.
+\newblock \bibinfo{journal}{\emph{International workshop on timing issues in
+  the specifications and synthesis of digital systems (TAU)}}
+  (\bibinfo{date}{September} \bibinfo{year}{1993}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Gunawardena}{Gunawardena}{1994}]%
+        {Gunawardena:Cycle}
+\bibfield{author}{\bibinfo{person}{Jeremy Gunawardena}.}
+  \bibinfo{year}{1994}\natexlab{}.
+\newblock \showarticletitle{Cycle times and fixed points of min-max functions}.
+\newblock \bibinfo{journal}{\emph{11th International Conference on Analysis and
+  Optimization of Systems Discrete Event Systems}}  \bibinfo{volume}{199}
+  (\bibinfo{year}{1994}), \bibinfo{pages}{266--272}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Hartman and Arguelles}{Hartman and
+  Arguelles}{1999}]%
+        {Mark:Tr}
+\bibfield{author}{\bibinfo{person}{Mark Hartman} {and}
+  \bibinfo{person}{Cristina Arguelles}.} \bibinfo{year}{1999}\natexlab{}.
+\newblock \showarticletitle{Transience bounds for long walks}.
+\newblock \bibinfo{journal}{\emph{Mathematics of Operational Research}}
+  \bibinfo{volume}{24}, \bibinfo{number}{2} (\bibinfo{year}{1999}),
+  \bibinfo{pages}{414--439}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Howard}{Howard}{1960}]%
+        {How:Dynamic}
+\bibfield{author}{\bibinfo{person}{Ronald~Arthur Howard}.}
+  \bibinfo{year}{1960}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Dynamic Programming and Markov Processes}}.
+\newblock \bibinfo{publisher}{The M.I.T Press}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Hua and Manohar}{Hua and Manohar}{2017}]%
+        {Hua:Exact}
+\bibfield{author}{\bibinfo{person}{Wenmian Hua} {and} \bibinfo{person}{Rajit
+  Manohar}.} \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Exact timing analysis for asynchronous systems}.
+\newblock \bibinfo{journal}{\emph{IEEE Transactions on Computer-Aided Design of
+  Integrated Circuits and Systems}} (\bibinfo{year}{2017}).
+\newblock
+\newblock
+\shownote{DOI:10:1109/TCAD.2017.2693268.}
+
+
+\bibitem[\protect\citeauthoryear{Hulgaard, Burns, Amon, and Borriello}{Hulgaard
+  et~al\mbox{.}}{1994}]%
+        {Hulgaard:Report}
+\bibfield{author}{\bibinfo{person}{Henrik Hulgaard}, \bibinfo{person}{Steven~M.
+  Burns}, \bibinfo{person}{Tod Amon}, {and} \bibinfo{person}{Gaetano
+  Borriello}.} \bibinfo{year}{1994}\natexlab{}.
+\newblock \showarticletitle{An algorithm for exact bounds on the time
+  separation of events in concurrent systems}.
+\newblock  (\bibinfo{year}{1994}).
+\newblock
+\newblock
+\shownote{\uppercase{T}echnical Report TR Number 94-02-02, University of
+  Washington, Department of Compter Science and Engineering.}
+
+
+\bibitem[\protect\citeauthoryear{Karp and Orlin}{Karp and Orlin}{1981}]%
+        {Karp:Parametric}
+\bibfield{author}{\bibinfo{person}{Richard~M. Karp} {and}
+  \bibinfo{person}{James~B. Orlin}.} \bibinfo{year}{1981}\natexlab{}.
+\newblock \showarticletitle{Parametric shortest path algorithms with an
+  application to cyclic staffing}.
+\newblock \bibinfo{journal}{\emph{Discrete Applied Mathematics}}
+  \bibinfo{volume}{3} (\bibinfo{year}{1981}), \bibinfo{pages}{37--45}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Lawler}{Lawler}{1976}]%
+        {Law:Combinatorial}
+\bibfield{author}{\bibinfo{person}{Eugene~Leighton Lawler}.}
+  \bibinfo{year}{1976}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Combinatorial Optimization: Network and
+  Matroids}}.
+\newblock \bibinfo{publisher}{Holt, Reinhart and Winston}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Lee}{Lee}{1995}]%
+        {Lee:Analysis}
+\bibfield{author}{\bibinfo{person}{Tak~Kwan Lee}.}
+  \bibinfo{year}{1995}\natexlab{}.
+\newblock \emph{\bibinfo{title}{A general approach to performance analysis and
+  optimization of asynchronous circuits}}.
+\newblock \bibinfo{thesistype}{Ph.D. Dissertation}. \bibinfo{school}{California
+  Institute of Technology}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Manohar and Martin}{Manohar and
+  Martin}{1996}]%
+        {Manohar:Quasi}
+\bibfield{author}{\bibinfo{person}{Rajit Manohar} {and}
+  \bibinfo{person}{Alain~J. Martin}.} \bibinfo{year}{1996}\natexlab{}.
+\newblock \showarticletitle{Quasi-delay-insensitive circuits are Turing
+  complete}.
+\newblock \bibinfo{journal}{\emph{Proceedings of International Symposium on
+  Advanced Research in Asynchronous Circuits and Systems}}
+  (\bibinfo{year}{1996}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{McGee and Nowick}{McGee and Nowick}{2007}]%
+        {McGee:An}
+\bibfield{author}{\bibinfo{person}{Peggy~B. McGee} {and}
+  \bibinfo{person}{Steven~M. Nowick}.} \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{An efficient algorithm for time separation of
+  events in concurrent systems}.
+\newblock \bibinfo{journal}{\emph{IEEE/ACM International Conference on
+  Computer-Aided Design}} (\bibinfo{year}{2007}), \bibinfo{pages}{180--187}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Merlet, Nowak, and Sergeev}{Merlet
+  et~al\mbox{.}}{2014}]%
+        {Gle:Weak}
+\bibfield{author}{\bibinfo{person}{Glenn Merlet}, \bibinfo{person}{Thomas
+  Nowak}, {and} \bibinfo{person}{Sergei Sergeev}.}
+  \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{Weak CSR expansions and transience bounds in
+  max-plus algebra}.
+\newblock \bibinfo{journal}{\emph{Linear Algebra Appl.}}  \bibinfo{volume}{461}
+  (\bibinfo{year}{2014}), \bibinfo{pages}{163--199}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Moreira, Arendt, Jr., Reis, and
+  Calazans}{Moreira et~al\mbox{.}}{2014}]%
+        {Moreira:Automated}
+\bibfield{author}{\bibinfo{person}{Matheus~T. Moreira}, \bibinfo{person}{Michel
+  Arendt}, \bibinfo{person}{Adriel~Ziesemer Jr.}, \bibinfo{person}{Ricardo
+  Reis}, {and} \bibinfo{person}{Ney Laert~Vilar Calazans}.}
+  \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{Automated synthesis of cell libraries for
+  asynchronous circuits}.
+\newblock \bibinfo{journal}{\emph{27th Symposium on Integrated Circuits and
+  Systems Design}} (\bibinfo{year}{2014}), \bibinfo{pages}{1--7}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Moreira, Oliveira, Calazans, and Ost}{Moreira
+  et~al\mbox{.}}{2013}]%
+        {Moreira:LiChEn}
+\bibfield{author}{\bibinfo{person}{Matheus~Trevisan Moreira},
+  \bibinfo{person}{Carlos H.~M. Oliveira}, \bibinfo{person}{Ney L.~V.
+  Calazans}, {and} \bibinfo{person}{Luciano~C. Ost}.}
+  \bibinfo{year}{2013}\natexlab{}.
+\newblock \showarticletitle{LiChEn: Automated electrical characterization of
+  asynchronous standard cell libraries}.
+\newblock \bibinfo{journal}{\emph{Euromicro Conference on Digital System
+  Design}} (\bibinfo{year}{2013}), \bibinfo{pages}{933--940}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Murata}{Murata}{1989}]%
+        {Murata:Petri}
+\bibfield{author}{\bibinfo{person}{Tadao Murata}.}
+  \bibinfo{year}{1989}\natexlab{}.
+\newblock \showarticletitle{Petri nets: Properties, Analysis and Applications}.
+\newblock \bibinfo{journal}{\emph{Proc. IEEE}} \bibinfo{volume}{77},
+  \bibinfo{number}{4} (\bibinfo{date}{April} \bibinfo{year}{1989}),
+  \bibinfo{pages}{541--580}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Prakash}{Prakash}{2007}]%
+        {Prakash:Library}
+\bibfield{author}{\bibinfo{person}{Mallika Prakash}.}
+  \bibinfo{year}{2007}\natexlab{}.
+\newblock \bibinfo{title}{Library characterization and static timing analysis
+  of asynchronous circuits}.
+\newblock
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Sergeev and Schneider}{Sergeev and
+  Schneider}{2012}]%
+        {Ser:CSR}
+\bibfield{author}{\bibinfo{person}{Sergei Sergeev} {and} \bibinfo{person}{Hans
+  Schneider}.} \bibinfo{year}{2012}\natexlab{}.
+\newblock \showarticletitle{\uppercase{C}\uppercase{S}\uppercase{R} expansions
+  of maxtrix powers in max algebra}.
+\newblock \bibinfo{journal}{\emph{Trans. Amer. Math. Soc.}}
+  \bibinfo{volume}{364} (\bibinfo{year}{2012}), \bibinfo{pages}{5696--5994}.
+\newblock
+\newblock
+\shownote{E-print arXiv:0912.2534.}
+
+
+\bibitem[\protect\citeauthoryear{Young, Tarjant, and Orlin}{Young
+  et~al\mbox{.}}{1991}]%
+        {Neal:Faster}
+\bibfield{author}{\bibinfo{person}{Neal~E. Young}, \bibinfo{person}{Robert~E.
+  Tarjant}, {and} \bibinfo{person}{James~B. Orlin}.}
+  \bibinfo{year}{1991}\natexlab{}.
+\newblock \showarticletitle{Faster parametric shortest path and minimum-balance
+  algorithms}.
+\newblock \bibinfo{journal}{\emph{Networks}} \bibinfo{volume}{21},
+  \bibinfo{number}{2} (\bibinfo{year}{1991}), \bibinfo{pages}{205--221}.
+\newblock
+
+
+\end{thebibliography}
