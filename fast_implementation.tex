@@ -32,6 +32,7 @@
 \usepackage{epstopdf}
 \usepackage{tikz}
 \usepackage{circuitikz}
+\usepackage{caption}
 \usetikzlibrary{calc, matrix, shapes, arrows, positioning, chains, decorations}
 \newtheorem{algorithm}{Algorithm}
 %\newtheorem{lemma}{Lemma}
@@ -89,6 +90,12 @@ cycle/.style={
   minimum height = 1.05cm,
   ultra thick,
 },
+Celement/.style={
+  circle,
+  draw,
+  very thick,
+  minimum width = 0.7cm,
+},
 combinational/.style={
   cloud,
   draw,
@@ -126,6 +133,7 @@ connector/.style={
 line/.style={
   draw, -latex',
   very thick,
+  inner sep=0pt,
 },
 }
 
@@ -316,8 +324,36 @@ Index priority simulation developed in~\cite{Lee:Analysis} is an algorithm which
 
 \subsection{Liberty File and Cell Characterization}
 Standard cell library: liberty (.lib) files contain information of timing and power information of basic cell element. For the timing analysis, we are only interested in the timing information in the files, which usually consists of 2D tables of propagation delays and transition time. Standard cells in synchronous circuit design are divided into two categories: combinational gates (NAND, NOR, INVERTER, etc.) and flip-flops. In this paper, we will adopt similar format to generate standard cell library for asynchronous circuits.
+\begin{figure}
+\begin{minipage}[c]{0.45\linewidth}
+\centering
+\begin{tikzpicture}[align=center, font=\small, node distance = 2cm]
+\node (1) [inner sep=0pt] {$a$};
+\node (2) [inner sep=0pt] [below = 0.15cm of 1] {$b$};
+\node [Celement] (3) [below right = -0.167cm and 1cm of 1] {C};
+\node (4) [right = 1cm of 3] {$c$};
+\path [line, very thick] (1.east) -- ([xshift=0.09cm, yshift=0.173cm]3.west);
+\path [line, very thick] (2.east) -- ([xshift=0.09cm, yshift=-0.173cm]3.west);
+\path [line, very thick] (3.east) -- (4.west);
+\end{tikzpicture}
 
-It turns out that characterizations of combinational gates in asynchronous circuit design are the same as that in synchronous counterpart. However, since asynchronous circuits do not have global clock signals, characterizations of general state-holding gates (for example, C element) are simplified, but a little bit different, and some extensions of the format of liberty files are needed. Look at the following example for C element commonly used in asynchronous circuit. In order to characterize the propagation delay from the signal transition $a\uparrow$ to $c\uparrow$, we have to first set $b$ to 1 and $c$ to 0. Then, let $a$ changes from 0 to 1, and measures the propagation delay from $a\uparrow$ to $c\uparrow$. To characterize the propagation delay from signal transition $a\downarrow$ to $c\downarrow$, however, we have to first set $b$ to 0 and $c$ to 1. Then let $a$ changes from 1 to 0. In other words, the ``cell$\_$rise'' and ``cell$\_$fall'' of pin $c$ in the liberty file correspond to different input conditions: $b = 1$ and $b = 0$, and have to be measured and characterized separately. This is different from combinational logic, where if one of the inputs changes from 0 to 1 leads the output to change from 1 to 0, then the same input changes from 1 to 0 will lead the output to change from 0 to 1.
+\end{minipage}
+\begin{minipage}[c]{0.45\linewidth}
+\centering
+\begin{tabular}{|c|c|c|} \hline
+$a$ & $b$ & $c$ \\ \hline
+0 & 0 & 0 \\ \hline
+0 & 1 & $c_{prev}$ \\ \hline
+1 & 0 & $c_{prev}$ \\ \hline
+1 & 1 & 1 \\ \hline
+\end{tabular}
+\end{minipage}
+\caption{C Element and Truth Table}
+\label{fig:Celement}
+\end{figure}
+It turns out that characterizations of combinational gates in asynchronous circuit design are the same as that in synchronous counterpart. However, since asynchronous circuits do not have global clock signals, characterizations of general state-holding gates (for example, C element) are simplified, but a little bit different, and some extensions of the format of liberty files are needed. 
+
+Look at the C element example in Figure~\ref{fig:Celement} which is commonly used in asynchronous circuit. In order to characterize the propagation delay from the signal transition $a\uparrow$ to $c\uparrow$, we have to first set $b$ to 1 and $c$ to 0. Then, let $a$ changes from 0 to 1, and measures the propagation delay from $a\uparrow$ to $c\uparrow$. To characterize the propagation delay from signal transition $a\downarrow$ to $c\downarrow$, however, we have to first set $b$ to 0 and $c$ to 1. Then let $a$ changes from 1 to 0. In other words, the ``cell$\_$rise'' and ``cell$\_$fall'' of pin $c$ in the liberty file correspond to different input conditions: $b = 1$ and $b = 0$, and have to be measured and characterized separately. This is different from combinational logic, where if one of the inputs changes from 0 to 1 leads the output to change from 1 to 0, then the same input changes from 1 to 0 will lead the output to change from 0 to 1.
 In our implementation, we use functionalities given for each standard cell in asynchronous circuit to determine the timing arcs and whether they are combinational or state-holding. Then we use HSPICE to simulate the cells to extract their timing and capacitance information, and write it in the extended liberty file format.
 %For a given circuit, an ACT file will be provided, which contains the information of circuit topology and functionality. We will use the CAD tool called ``Celltk'' to generate the Spice Netlist for cells, and their corresponding {\it PRS\/}. Then, the liberty file that characterizing these cells is generated by calling the hspice within c++ with appropriate simulation commands.
 \subsection{Slew Rate Approximation}
